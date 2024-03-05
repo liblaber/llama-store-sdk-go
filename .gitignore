@@ -8,3 +8,4 @@
 
 # Output of go coverage
 *.out
+.DS_Store
