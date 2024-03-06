@@ -28,6 +28,11 @@ func (api *LlamaService) SetBaseUrl(baseUrl string) {
 	config.SetBaseUrl(baseUrl)
 }
 
+func (api *LlamaService) SetAccessToken(accessToken string) {
+	config := api.getConfig()
+	config.SetAccessToken(accessToken)
+}
+
 // Get all the llamas.
 func (api *LlamaService) GetLlamas() (*shared.LlamaStoreResponse[[]Llama], error) {
 	config := *api.getConfig()

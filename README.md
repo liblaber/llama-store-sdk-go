@@ -1,9 +1,9 @@
-# LlamaStore Go SDK 0.0.2
+# LlamaStore Go SDK 0.0.3
 
 A Go SDK for LlamaStore.
 
 - API version: 0.1.7
-- SDK version: 0.0.2
+- SDK version: 0.0.3
 
 The llama store API! Get details on all your favorite llamas.
 
@@ -55,7 +55,26 @@ Authorization: Bearer <your token>
 
 ## Table of Contents
 
+- [Authentication](#authentication)
 - [Services](#services)
+
+## Authentication
+
+### Access Token
+
+The llama-store API uses a access token as a form of authentication.
+
+The access token can be set when initializing the SDK like this:
+
+```go
+// Constructor initialization
+```
+
+Or at a later stage:
+
+```go
+// Setter initialization
+```
 
 ## Services
 

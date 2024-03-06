@@ -28,6 +28,11 @@ func (api *TokenService) SetBaseUrl(baseUrl string) {
 	config.SetBaseUrl(baseUrl)
 }
 
+func (api *TokenService) SetAccessToken(accessToken string) {
+	config := api.getConfig()
+	config.SetAccessToken(accessToken)
+}
+
 // Create an API token for a user. These tokens expire after 30 minutes.
 //
 // Once you have this token, you need to pass it to other endpoints in the Authorization header as a Bearer token.

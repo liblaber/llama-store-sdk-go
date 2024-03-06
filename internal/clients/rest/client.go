@@ -14,13 +14,15 @@ type RestClient struct {
 func NewRestClient(config llamastoreconfig.Config) *RestClient {
 	defaultHeadersHandler := handlers.NewDefaultHeadersHandler()
 	retryHandler := handlers.NewRetryHandler()
-	hookHandler := handlers.NewHookHandler(hooks.NewDefaultHook())
+	bearerTokenHandler := handlers.NewAccessTokenHandler()
+	hookHandler := handlers.NewHookHandler(hooks.NewCustomHook())
 	requestValidationHandler := handlers.NewRequestValidationHandler()
 	terminatingHandler := handlers.NewTerminatingHandler()
 
 	handlers := handlers.BuildHandlerChain().
 		AddHandler(defaultHeadersHandler).
 		AddHandler(retryHandler).
+		AddHandler(bearerTokenHandler).
 		AddHandler(hookHandler).
 		AddHandler(requestValidationHandler).
 		AddHandler(terminatingHandler)

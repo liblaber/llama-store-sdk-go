@@ -1,9 +1,13 @@
 {
   "liblabVersion": "2.0.17",
-  "date": "2024-02-28T23:29:09.840Z",
+  "date": "2024-03-06T23:26:36.847Z",
   "config": {
     "usesFormData": false,
-    "authentication": {},
+    "authentication": {
+      "access": {
+        "prefix": "Bearer"
+      }
+    },
     "environmentVariables": [],
     "fileOutput": "/tmp",
     "inferServiceNames": false,
@@ -15,8 +19,9 @@
       "languages": ["typescript"]
     },
     "auth": ["bearer"],
+    "baseUrl": "http://localhost:8080",
     "sdkName": "llama-store",
-    "sdkVersion": "0.0.2",
+    "sdkVersion": "0.0.3",
     "retry": {
       "enabled": true,
       "maxAttempts": 3,
@@ -34,38 +39,38 @@
     },
     "deliveryMethod": "zip",
     "language": "go",
-    "apiId": 519,
+    "apiId": 543,
     "liblabVersion": "1",
     "deliveryMethods": ["zip"],
     "languages": ["go"],
-    "createDocs": false,
+    "createDocs": true,
     "languageOptions": {
       "csharp": {
         "githubRepoName": "llama-store-sdk-csharp",
-        "sdkVersion": "0.0.2"
+        "sdkVersion": "0.0.3"
       },
       "go": {
         "goModuleName": "github.com/liblaber/llama-store-sdk-go",
         "githubRepoName": "llama-store-sdk-go",
-        "sdkVersion": "0.0.2"
+        "sdkVersion": "0.0.3"
       },
       "java": {
         "groupId": "com.liblab",
         "githubRepoName": "llama-store-sdk-java",
-        "sdkVersion": "0.0.2"
+        "sdkVersion": "0.0.3"
       },
       "python": {
         "alwaysInitializeOptionals": true,
         "pypiPackageName": "LlamaStore",
         "githubRepoName": "llama-store-sdk-python",
-        "sdkVersion": "0.0.2"
+        "sdkVersion": "0.0.3"
       },
       "typescript": {
         "bundle": true,
         "exportClassDefault": true,
         "httpClient": "axios",
         "githubRepoName": "llama-store-sdk-typescript",
-        "sdkVersion": "0.0.2"
+        "sdkVersion": "0.0.3"
       }
     },
     "publishing": {
@@ -75,12 +80,16 @@
     "devContainer": true,
     "includeOptionalSnippetParameters": true,
     "responseHeaders": false,
-    "specUrl": "https://prod-liblab-api-stack-specs.s3.us-east-1.amazonaws.com/519/open-api-spec.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA5P3QKKDKGVNIJ2H7%2F20240228%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240228T232905Z&X-Amz-Expires=43200&X-Amz-Signature=d72bc624b979947166571fad8c1e5921453b6c2deda4f2197a480cb6cec30ec6&X-Amz-SignedHeaders=host&x-id=GetObject",
+    "hooksLocation": {
+      "bucketKey": "4132/hooks.zip",
+      "bucketName": "prod-liblab-api-stack-hooks"
+    },
+    "specUrl": "https://prod-liblab-api-stack-specs.s3.us-east-1.amazonaws.com/543/open-api-spec.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA5P3QKKDKGVNIJ2H7%2F20240306%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240306T232632Z&X-Amz-Expires=43200&X-Amz-Signature=409e8e10193d1dbcb0f27e602e0e781bba3d33f2824744fc6e00f33caa62634d&X-Amz-SignedHeaders=host&x-id=GetObject",
     "goModuleName": "github.com/liblaber/llama-store-sdk-go",
     "githubRepoName": "llama-store-sdk-go",
     "hooks": {
-      "enabled": false,
-      "sourceDir": ""
+      "enabled": true,
+      "sourceDir": "/tmp/resources/hooks"
     }
   },
   "files": [
@@ -96,8 +105,9 @@
     "cmd/examples/example.go",
     "internal/clients/rest/handlers/terminating_handler.go",
     "internal/clients/rest/handlers/hook_handler.go",
+    "internal/clients/rest/handlers/bearer_token_handler.go",
     "internal/clients/rest/hooks/hook.go",
-    "internal/clients/rest/hooks/default_hook.go",
+    "internal/clients/rest/hooks/custom_hook.go",
     "internal/clients/rest/handlers/default_headers_handler.go",
     "internal/clients/rest/handlers/retry_handler.go",
     "internal/clients/rest/handlers/request_validation_handler.go",
