@@ -28,6 +28,11 @@ func (api *UserService) SetBaseUrl(baseUrl string) {
 	config.SetBaseUrl(baseUrl)
 }
 
+func (api *UserService) SetAccessToken(accessToken string) {
+	config := api.getConfig()
+	config.SetAccessToken(accessToken)
+}
+
 // Get a user by email.
 //
 // This endpoint will return a 404 if the user does not exist. Otherwise, it will return a 200.

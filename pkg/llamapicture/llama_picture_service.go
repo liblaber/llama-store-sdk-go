@@ -28,6 +28,11 @@ func (api *LlamaPictureService) SetBaseUrl(baseUrl string) {
 	config.SetBaseUrl(baseUrl)
 }
 
+func (api *LlamaPictureService) SetAccessToken(accessToken string) {
+	config := api.getConfig()
+	config.SetAccessToken(accessToken)
+}
+
 // Get a llama's picture by the llama ID. Pictures are in PNG format.
 func (api *LlamaPictureService) GetLlamaPictureByLlamaId(llamaId int64) error {
 	config := *api.getConfig()
