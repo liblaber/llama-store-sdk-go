@@ -7,29 +7,35 @@ import (
 	"github.com/liblaber/llama-store-sdk-go/pkg/llamastoreconfig"
 )
 
-type RestClient struct {
-	handlers *handlers.HandlerChain
+type RestClient[T any] struct {
+	handlers *handlers.HandlerChain[T]
 }
 
-func NewRestClient(config llamastoreconfig.Config) *RestClient {
-	defaultHeadersHandler := handlers.NewDefaultHeadersHandler()
-	retryHandler := handlers.NewRetryHandler()
-	hookHandler := handlers.NewHookHandler(hooks.NewDefaultHook())
-	requestValidationHandler := handlers.NewRequestValidationHandler()
-	terminatingHandler := handlers.NewTerminatingHandler()
+func NewRestClient[T any](config llamastoreconfig.Config) *RestClient[T] {
+	defaultHeadersHandler := handlers.NewDefaultHeadersHandler[T]()
+	retryHandler := handlers.NewRetryHandler[T]()
+	bearerTokenHandler := handlers.NewAccessTokenHandler[T]()
+	responseValidationHandler := handlers.NewResponseValidationHandler[T]()
+	unmarshalHandler := handlers.NewUnmarshalHandler[T]()
+	requestValidationHandler := handlers.NewRequestValidationHandler[T]()
+	hookHandler := handlers.NewHookHandler[T](hooks.NewCustomHook())
+	terminatingHandler := handlers.NewTerminatingHandler[T]()
 
-	handlers := handlers.BuildHandlerChain().
+	handlers := handlers.BuildHandlerChain[T]().
 		AddHandler(defaultHeadersHandler).
 		AddHandler(retryHandler).
-		AddHandler(hookHandler).
+		AddHandler(bearerTokenHandler).
+		AddHandler(responseValidationHandler).
+		AddHandler(unmarshalHandler).
 		AddHandler(requestValidationHandler).
+		AddHandler(hookHandler).
 		AddHandler(terminatingHandler)
 
-	return &RestClient{
+	return &RestClient[T]{
 		handlers: handlers,
 	}
 }
 
-func (client *RestClient) Call(request httptransport.Request) (*httptransport.Response, *httptransport.ErrorResponse) {
+func (client *RestClient[T]) Call(request httptransport.Request) (*httptransport.Response[T], *httptransport.ErrorResponse[T]) {
 	return client.handlers.CallApi(request)
 }

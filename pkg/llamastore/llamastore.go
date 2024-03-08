@@ -31,3 +31,9 @@ func NewLlamaStore(config llamastoreconfig.Config) *LlamaStore {
 func (l *LlamaStore) SetBaseUrl(baseUrl string) {
 	l.manager.SetBaseUrl(baseUrl)
 }
+
+func (l *LlamaStore) SetAccessToken(accessToken string) {
+	l.manager.SetAccessToken(accessToken)
+}
+
+// c029837e0e474b76bc487506e8799df5e3335891efe4fb02bda7a1441840310c

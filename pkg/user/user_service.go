@@ -1,10 +1,10 @@
 package user
 
 import (
+	"context"
 	restClient "github.com/liblaber/llama-store-sdk-go/internal/clients/rest"
 	"github.com/liblaber/llama-store-sdk-go/internal/clients/rest/httptransport"
 	"github.com/liblaber/llama-store-sdk-go/internal/configmanager"
-	"github.com/liblaber/llama-store-sdk-go/internal/unmarshal"
 	"github.com/liblaber/llama-store-sdk-go/pkg/llamastoreconfig"
 	"github.com/liblaber/llama-store-sdk-go/pkg/shared"
 )
@@ -28,68 +28,47 @@ func (api *UserService) SetBaseUrl(baseUrl string) {
 	config.SetBaseUrl(baseUrl)
 }
 
+func (api *UserService) SetAccessToken(accessToken string) {
+	config := api.getConfig()
+	config.SetAccessToken(accessToken)
+}
+
 // Get a user by email.
 //
 // This endpoint will return a 404 if the user does not exist. Otherwise, it will return a 200.
-func (api *UserService) GetUserByEmail(email string) (*shared.LlamaStoreResponse[User], error) {
+func (api *UserService) GetUserByEmail(ctx context.Context, email string) (*shared.LlamaStoreResponse[User], *shared.LlamaStoreError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[User](config)
 
-	request := httptransport.NewRequest("GET", "/user/{email}", config)
+	request := httptransport.NewRequest(ctx, "GET", "/user/{email}", config)
 
 	request.SetPathParam("email", email)
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewLlamaStoreError[User](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[User](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.LlamaStoreResponse[User]{
-		Data: *data,
-		Metadata: shared.LlamaStoreResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewLlamaStoreResponse[User](resp), nil
 }
 
 // Register a new user.
 //
 // This endpoint will return a 400 if the user already exists. Otherwise, it will return a 201.
-func (api *UserService) RegisterUser(userRegistration UserRegistration) (*shared.LlamaStoreResponse[User], error) {
+func (api *UserService) RegisterUser(ctx context.Context, userRegistration UserRegistration) (*shared.LlamaStoreResponse[User], *shared.LlamaStoreError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[User](config)
 
-	request := httptransport.NewRequest("POST", "/user", config)
+	request := httptransport.NewRequest(ctx, "POST", "/user", config)
 
 	request.Body = userRegistration
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewLlamaStoreError[User](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[User](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.LlamaStoreResponse[User]{
-		Data: *data,
-		Metadata: shared.LlamaStoreResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewLlamaStoreResponse[User](resp), nil
 }
