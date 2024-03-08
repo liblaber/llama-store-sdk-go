@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/liblaber/llama-store-sdk-go/pkg/llamastore"
@@ -12,7 +13,7 @@ func main() {
 
 	llamaStore := llamastore.NewLlamaStore(config)
 
-	res, err := llamaStore.Llama.GetLlamas()
+	res, err := llamaStore.Llama.GetLlamas(context.Background())
 	if err != nil {
 		panic(err)
 	}

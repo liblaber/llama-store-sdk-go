@@ -1,10 +1,10 @@
 package token
 
 import (
+	"context"
 	restClient "github.com/liblaber/llama-store-sdk-go/internal/clients/rest"
 	"github.com/liblaber/llama-store-sdk-go/internal/clients/rest/httptransport"
 	"github.com/liblaber/llama-store-sdk-go/internal/configmanager"
-	"github.com/liblaber/llama-store-sdk-go/internal/unmarshal"
 	"github.com/liblaber/llama-store-sdk-go/pkg/llamastoreconfig"
 	"github.com/liblaber/llama-store-sdk-go/pkg/shared"
 )
@@ -28,35 +28,27 @@ func (api *TokenService) SetBaseUrl(baseUrl string) {
 	config.SetBaseUrl(baseUrl)
 }
 
+func (api *TokenService) SetAccessToken(accessToken string) {
+	config := api.getConfig()
+	config.SetAccessToken(accessToken)
+}
+
 // Create an API token for a user. These tokens expire after 30 minutes.
 //
 // Once you have this token, you need to pass it to other endpoints in the Authorization header as a Bearer token.
-func (api *TokenService) CreateApiToken(apiTokenRequest ApiTokenRequest) (*shared.LlamaStoreResponse[ApiToken], error) {
+func (api *TokenService) CreateApiToken(ctx context.Context, apiTokenRequest ApiTokenRequest) (*shared.LlamaStoreResponse[ApiToken], *shared.LlamaStoreError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[ApiToken](config)
 
-	request := httptransport.NewRequest("POST", "/token", config)
+	request := httptransport.NewRequest(ctx, "POST", "/token", config)
 
 	request.Body = apiTokenRequest
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewLlamaStoreError[ApiToken](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[ApiToken](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.LlamaStoreResponse[ApiToken]{
-		Data: *data,
-		Metadata: shared.LlamaStoreResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewLlamaStoreResponse[ApiToken](resp), nil
 }

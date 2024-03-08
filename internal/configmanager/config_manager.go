@@ -25,6 +25,32 @@ func (c *ConfigManager) SetBaseUrl(baseUrl string) {
 	c.User.SetBaseUrl(baseUrl)
 }
 
+func (c *ConfigManager) SetAccessToken(accessToken string) {
+	c.LlamaPicture.SetAccessToken(accessToken)
+	c.Llama.SetAccessToken(accessToken)
+	c.Token.SetAccessToken(accessToken)
+	c.User.SetAccessToken(accessToken)
+}
+
+func (c *ConfigManager) UpdateAccessToken(originalValue string, newValue string) {
+
+	if c.LlamaPicture.AccessToken != nil && *c.LlamaPicture.AccessToken == originalValue {
+		c.LlamaPicture.SetAccessToken(newValue)
+	}
+
+	if c.Llama.AccessToken != nil && *c.Llama.AccessToken == originalValue {
+		c.Llama.SetAccessToken(newValue)
+	}
+
+	if c.Token.AccessToken != nil && *c.Token.AccessToken == originalValue {
+		c.Token.SetAccessToken(newValue)
+	}
+
+	if c.User.AccessToken != nil && *c.User.AccessToken == originalValue {
+		c.User.SetAccessToken(newValue)
+	}
+}
+
 func (c *ConfigManager) GetLlamaPicture() *llamastoreconfig.Config {
 	return &c.LlamaPicture
 }
