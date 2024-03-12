@@ -1,11 +1,12 @@
 package llamastoreconfig
 
 type Config struct {
-	BaseUrl *string
+	BaseUrl     *string
+	AccessToken *string
 }
 
 func NewConfig() Config {
-	baseUrl := ""
+	baseUrl := "http://localhost:8080"
 	newConfig := Config{
 		BaseUrl: &baseUrl,
 	}
@@ -15,4 +16,8 @@ func NewConfig() Config {
 
 func (c *Config) SetBaseUrl(baseUrl string) {
 	c.BaseUrl = &baseUrl
+}
+
+func (c *Config) SetAccessToken(accessToken string) {
+	c.AccessToken = &accessToken
 }

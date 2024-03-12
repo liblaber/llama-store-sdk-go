@@ -1,10 +1,10 @@
 package llama
 
 import (
+	"context"
 	restClient "github.com/liblaber/llama-store-sdk-go/internal/clients/rest"
 	"github.com/liblaber/llama-store-sdk-go/internal/clients/rest/httptransport"
 	"github.com/liblaber/llama-store-sdk-go/internal/configmanager"
-	"github.com/liblaber/llama-store-sdk-go/internal/unmarshal"
 	"github.com/liblaber/llama-store-sdk-go/pkg/llamastoreconfig"
 	"github.com/liblaber/llama-store-sdk-go/pkg/shared"
 )
@@ -28,146 +28,99 @@ func (api *LlamaService) SetBaseUrl(baseUrl string) {
 	config.SetBaseUrl(baseUrl)
 }
 
+func (api *LlamaService) SetAccessToken(accessToken string) {
+	config := api.getConfig()
+	config.SetAccessToken(accessToken)
+}
+
 // Get all the llamas.
-func (api *LlamaService) GetLlamas() (*shared.LlamaStoreResponse[[]Llama], error) {
+func (api *LlamaService) GetLlamas(ctx context.Context) (*shared.LlamaStoreResponse[[]Llama], *shared.LlamaStoreError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[[]Llama](config)
 
-	request := httptransport.NewRequest("GET", "/llama", config)
+	request := httptransport.NewRequest(ctx, "GET", "/llama", config)
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewLlamaStoreError[[]Llama](err)
 	}
 
-	data, unmarshalError := unmarshal.ToArray[[]Llama](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.LlamaStoreResponse[[]Llama]{
-		Data: data,
-		Metadata: shared.LlamaStoreResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewLlamaStoreResponse[[]Llama](resp), nil
 }
 
 // Create a new llama. Llama names must be unique.
-func (api *LlamaService) CreateLlama(llamaCreate LlamaCreate) (*shared.LlamaStoreResponse[Llama], error) {
+func (api *LlamaService) CreateLlama(ctx context.Context, llamaCreate LlamaCreate) (*shared.LlamaStoreResponse[Llama], *shared.LlamaStoreError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[Llama](config)
 
-	request := httptransport.NewRequest("POST", "/llama", config)
+	request := httptransport.NewRequest(ctx, "POST", "/llama", config)
 
 	request.Body = llamaCreate
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewLlamaStoreError[Llama](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[Llama](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.LlamaStoreResponse[Llama]{
-		Data: *data,
-		Metadata: shared.LlamaStoreResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewLlamaStoreResponse[Llama](resp), nil
 }
 
 // Get a llama by ID.
-func (api *LlamaService) GetLlamaById(llamaId int64) (*shared.LlamaStoreResponse[Llama], error) {
+func (api *LlamaService) GetLlamaById(ctx context.Context, llamaId int64) (*shared.LlamaStoreResponse[Llama], *shared.LlamaStoreError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[Llama](config)
 
-	request := httptransport.NewRequest("GET", "/llama/{llama_id}", config)
+	request := httptransport.NewRequest(ctx, "GET", "/llama/{llama_id}", config)
 
 	request.SetPathParam("llama_id", llamaId)
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewLlamaStoreError[Llama](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[Llama](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.LlamaStoreResponse[Llama]{
-		Data: *data,
-		Metadata: shared.LlamaStoreResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewLlamaStoreResponse[Llama](resp), nil
 }
 
 // Update a llama. If the llama does not exist, create it.
 //
 // When updating a llama, the llama name must be unique. If the llama name is not unique, a 409 will be returned.
-func (api *LlamaService) UpdateLlama(llamaId int64, llamaCreate LlamaCreate) (*shared.LlamaStoreResponse[Llama], error) {
+func (api *LlamaService) UpdateLlama(ctx context.Context, llamaId int64, llamaCreate LlamaCreate) (*shared.LlamaStoreResponse[Llama], *shared.LlamaStoreError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[Llama](config)
 
-	request := httptransport.NewRequest("PUT", "/llama/{llama_id}", config)
+	request := httptransport.NewRequest(ctx, "PUT", "/llama/{llama_id}", config)
 
 	request.Body = llamaCreate
 
 	request.SetPathParam("llama_id", llamaId)
 
-	httpResponse, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return nil, err.GetError()
+		return nil, shared.NewLlamaStoreError[Llama](err)
 	}
 
-	data, unmarshalError := unmarshal.ToObject[Llama](httpResponse)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	response := shared.LlamaStoreResponse[Llama]{
-		Data: *data,
-		Metadata: shared.LlamaStoreResponseMetadata{
-			Headers:    httpResponse.Headers,
-			StatusCode: httpResponse.StatusCode,
-		},
-	}
-
-	return &response, nil
+	return shared.NewLlamaStoreResponse[Llama](resp), nil
 }
 
 // Delete a llama. If the llama does not exist, this will return a 404.
-func (api *LlamaService) DeleteLlama(llamaId int64) error {
+func (api *LlamaService) DeleteLlama(ctx context.Context, llamaId int64) (*shared.LlamaStoreResponse[any], *shared.LlamaStoreError) {
 	config := *api.getConfig()
 
-	client := restClient.NewRestClient(config)
+	client := restClient.NewRestClient[any](config)
 
-	request := httptransport.NewRequest("DELETE", "/llama/{llama_id}", config)
+	request := httptransport.NewRequest(ctx, "DELETE", "/llama/{llama_id}", config)
 
 	request.SetPathParam("llama_id", llamaId)
 
-	_, err := client.Call(request)
+	resp, err := client.Call(request)
 	if err != nil {
-		return err.GetError()
+		return nil, shared.NewLlamaStoreError[any](err)
 	}
 
-	return nil
+	return shared.NewLlamaStoreResponse[any](resp), nil
 }

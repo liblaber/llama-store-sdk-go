@@ -1,9 +1,13 @@
 {
-  "liblabVersion": "2.0.17",
-  "date": "2024-02-28T23:29:09.840Z",
+  "liblabVersion": "2.0.19",
+  "date": "2024-03-12T11:35:54.273Z",
   "config": {
     "usesFormData": false,
-    "authentication": {},
+    "authentication": {
+      "access": {
+        "prefix": "Bearer"
+      }
+    },
     "environmentVariables": [],
     "fileOutput": "/tmp",
     "inferServiceNames": false,
@@ -15,8 +19,9 @@
       "languages": ["typescript"]
     },
     "auth": ["bearer"],
+    "baseUrl": "http://localhost:8080",
     "sdkName": "llama-store",
-    "sdkVersion": "0.0.2",
+    "sdkVersion": "0.0.3",
     "retry": {
       "enabled": true,
       "maxAttempts": 3,
@@ -34,53 +39,57 @@
     },
     "deliveryMethod": "zip",
     "language": "go",
-    "apiId": 519,
+    "apiId": 543,
     "liblabVersion": "1",
     "deliveryMethods": ["zip"],
     "languages": ["go"],
-    "createDocs": false,
+    "specFilePath": "spec.json",
+    "createDocs": true,
     "languageOptions": {
       "csharp": {
         "githubRepoName": "llama-store-sdk-csharp",
-        "sdkVersion": "0.0.2"
+        "sdkVersion": "0.0.3"
       },
       "go": {
         "goModuleName": "github.com/liblaber/llama-store-sdk-go",
         "githubRepoName": "llama-store-sdk-go",
-        "sdkVersion": "0.0.2"
+        "sdkVersion": "0.0.3"
       },
       "java": {
         "groupId": "com.liblab",
         "githubRepoName": "llama-store-sdk-java",
-        "sdkVersion": "0.0.2"
+        "sdkVersion": "0.0.3"
       },
       "python": {
         "alwaysInitializeOptionals": true,
         "pypiPackageName": "LlamaStore",
         "githubRepoName": "llama-store-sdk-python",
-        "sdkVersion": "0.0.2"
+        "sdkVersion": "0.0.3"
       },
       "typescript": {
         "bundle": true,
         "exportClassDefault": true,
         "httpClient": "axios",
         "githubRepoName": "llama-store-sdk-typescript",
-        "sdkVersion": "0.0.2"
+        "sdkVersion": "0.0.3"
       }
     },
     "publishing": {
       "githubOrg": "liblaber"
     },
-    "specFilePath": "spec.json",
-    "devContainer": true,
     "includeOptionalSnippetParameters": true,
+    "devContainer": true,
     "responseHeaders": false,
-    "specUrl": "https://prod-liblab-api-stack-specs.s3.us-east-1.amazonaws.com/519/open-api-spec.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA5P3QKKDKGVNIJ2H7%2F20240228%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240228T232905Z&X-Amz-Expires=43200&X-Amz-Signature=d72bc624b979947166571fad8c1e5921453b6c2deda4f2197a480cb6cec30ec6&X-Amz-SignedHeaders=host&x-id=GetObject",
+    "hooksLocation": {
+      "bucketKey": "4219/hooks.zip",
+      "bucketName": "prod-liblab-api-stack-hooks"
+    },
+    "specUrl": "https://prod-liblab-api-stack-specs.s3.us-east-1.amazonaws.com/543/open-api-spec.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA5P3QKKDKGVNIJ2H7%2F20240312%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240312T113550Z&X-Amz-Expires=43200&X-Amz-Signature=94c158df10403a8cff7cd1487b71a04fe6047605e5c8bb5bb1acb5e47834ba42&X-Amz-SignedHeaders=host&x-id=GetObject",
     "goModuleName": "github.com/liblaber/llama-store-sdk-go",
     "githubRepoName": "llama-store-sdk-go",
     "hooks": {
-      "enabled": false,
-      "sourceDir": ""
+      "enabled": true,
+      "sourceDir": "/tmp/resources/hooks"
     }
   },
   "files": [
@@ -96,14 +105,17 @@
     "cmd/examples/example.go",
     "internal/clients/rest/handlers/terminating_handler.go",
     "internal/clients/rest/handlers/hook_handler.go",
+    "internal/clients/rest/handlers/bearer_token_handler.go",
     "internal/clients/rest/hooks/hook.go",
-    "internal/clients/rest/hooks/default_hook.go",
+    "internal/clients/rest/hooks/custom_hook.go",
     "internal/clients/rest/handlers/default_headers_handler.go",
     "internal/clients/rest/handlers/retry_handler.go",
     "internal/clients/rest/handlers/request_validation_handler.go",
     "internal/validation/validation.go",
     "internal/validation/validate_required.go",
-    "internal/unmarshal/to_array.go",
+    "internal/clients/rest/handlers/response_validation_handler.go",
+    "internal/unmarshal/unmarshal.go",
+    "internal/clients/rest/handlers/unmarshal_handler.go",
     "internal/unmarshal/to_complex_object.go",
     "internal/unmarshal/to_object.go",
     "internal/unmarshal/to_primitive.go",
@@ -112,6 +124,7 @@
     "pkg/llamastoreconfig/config.go",
     "internal/configmanager/config_manager.go",
     "pkg/shared/llama_store_response.go",
+    "pkg/shared/llama_store_error.go",
     "pkg/user/user_service.go",
     "pkg/llama/llama_color.go",
     "pkg/llamapicture/llama_id.go",
